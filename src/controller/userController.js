@@ -2,8 +2,8 @@ const { validationResult } = require("express-validator");
 const db = require("../config/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-require('dotenv').config()
-const {registrarNaBlacklist} = require('../middleware/authMiddleware')
+require("dotenv").config();
+const { registrarNaBlacklist } = require("../middleware/authMiddleware");
 
 // GET Todos os usuários que estao ativo
 const getUsuarios = async (req, res) => {
@@ -58,14 +58,14 @@ const getUsuarioById = async (req, res) => {
       return res.status(404).json({ mensagem: "Usuário não encontrado" });
     }
 
-    //verifica se usuario esta como desativado 
+    //verifica se usuario esta como desativado
     if (usuario.rows[0].active === false) {
       res.status(400).json({ mensagem: "voce esta desativado" });
-    } else {
-      res
-        .status(200)
-        .json({ mensagem: "Usuário encontrado", usuario: usuario.rows[0] });
+      return;
     }
+    res
+      .status(200)
+      .json({ mensagem: "Usuário encontrado", usuario: usuario.rows[0] });
   } catch (error) {
     console.error("Erro ao buscar usuário:", error);
     res.status(500).send("Erro no servidor");
@@ -146,7 +146,7 @@ const updateUsuario = async (req, res) => {
     }
 
     // Hash apenas se a senha for fornecida
-    const senhaHasheada = senha ? await bcrypt.hash(senha, 8) : null;
+    const senhaHasheada = senha && (await bcrypt.hash(senha, 8));
 
     const usuario = await db.query(
       `UPDATE usuarios 
@@ -201,8 +201,12 @@ const loginUsuario = async (req, res) => {
     if (usuario.active === false) {
       return res.status(400).json({ mensagem: "voce esta desativado" });
     }
-    //gera o token 
-    const token = jwt.sign({id:usuario.id, nome: usuario.nome, email: usuario.email}, process.env.SECRET_KEY, {expiresIn: '1h'})
+    //gera o token
+    const token = jwt.sign(
+      { id: usuario.id, nome: usuario.nome, email: usuario.email },
+      process.env.SECRET_KEY,
+      { expiresIn: "1h" }
+    );
     res.status(200).json({
       mensagem: "Login bem-sucedido",
       token,
@@ -227,7 +231,6 @@ const logoutUsuario = (req, res) => {
   res.status(200).json({ mensagem: "Logout realizado com sucesso" });
 };
 
-
 module.exports = {
   getUsuarios,
   getUsuarioById,
@@ -236,5 +239,5 @@ module.exports = {
   updateUsuario,
   loginUsuario,
   usuariosInativos,
-  logoutUsuario
+  logoutUsuario,
 };
