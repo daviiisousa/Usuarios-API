@@ -1,8 +1,5 @@
 const jwt = require("jsonwebtoken");
-require('dotenv').config()
-
-// Simulando uma blacklist
-const blacklist = [];
+require("dotenv").config();
 
 const autenticarToken = (req, res, next) => {
   const token = req.headers["authorization"]?.split(" ")[1];
@@ -11,12 +8,8 @@ const autenticarToken = (req, res, next) => {
     return res.status(401).json({ mensagem: "Token não fornecido" });
   }
 
-  // Verificar se o token está na blacklist
-  if (blacklist.includes(token)) {
-    return res.status(403).json({ mensagem: "Token inválido ou expirado" });
-  }
-
   try {
+    //decodifica o token e verfica se existe a assinatura igual a do env
     const usuario = jwt.verify(token, process.env.SECRET_KEY);
     req.usuario = usuario; // Adiciona os dados do usuário no request
     next();
@@ -25,9 +18,4 @@ const autenticarToken = (req, res, next) => {
   }
 };
 
-// Rota para adicionar token à blacklist
-const registrarNaBlacklist = (token) => {
-  blacklist.push(token);
-};
-
-module.exports = { autenticarToken, registrarNaBlacklist };
+module.exports = { autenticarToken };
