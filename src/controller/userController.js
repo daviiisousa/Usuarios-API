@@ -10,7 +10,7 @@ const getUsuarios = async (req, res) => {
   try {
     // Consultar apenas usuários ativos
     const usuariosAtivos = await db.query(
-      "SELECT * FROM usuarios WHERE active = $1",
+      "SELECT * FROM usuarios WHERE ativo = $1",
       [true]
     );
 
@@ -30,7 +30,7 @@ const getUsuarios = async (req, res) => {
 const usuariosInativos = async (req, res) => {
   try {
     const usuariosInativos = await db.query(
-      "SELECT * FROM usuarios WHERE active = $1",
+      "SELECT * FROM usuarios WHERE ativo = $1",
       [false]
     );
     if (usuariosInativos.rows.length === 0) {
@@ -59,7 +59,7 @@ const getUsuarioById = async (req, res) => {
     }
 
     //verifica se usuario esta como desativado
-    if (usuario.rows[0].active === false) {
+    if (usuario.rows[0].ativo === false) {
       res.status(400).json({ mensagem: "voce esta desativado" });
       return;
     }
@@ -119,7 +119,7 @@ const deleteUsuario = async (req, res) => {
     }
 
     const usuarioDeletado = await db.query(
-      "UPDATE usuarios SET active = $1 WHERE id = $2 RETURNING *",
+      "UPDATE usuarios SET ativo = $1 WHERE id = $2 RETURNING *",
       [false, id]
     );
 
@@ -198,7 +198,7 @@ const loginUsuario = async (req, res) => {
       return res.status(401).json({ mensagem: "Senha incorreta" });
     }
 
-    if (usuario.active === false) {
+    if (usuario.ativo === false) {
       return res.status(400).json({ mensagem: "voce esta desativado" });
     }
     //gera o token
