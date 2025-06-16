@@ -77,6 +77,27 @@ const createUsuario = async (req, res) => {
   try {
     const { nome, email, senha } = req.body;
 
+    if (!nome || !email || !senha) {
+      return res
+        .status(400)
+        .json({ mensagem: "Todos os campos são obrigatórios" });
+    }
+
+    if (senha.length < 6) {
+      return res
+        .status(400)
+        .json({ mensagem: "A senha deve ter pelo menos 6 caracteres" });
+    }
+
+    const usuarioExistente = await db.query(
+      "SELECT * FROM usuarios WHERE email = $1",
+      [email]
+    );
+
+    if (usuarioExistente.rows.length > 0) {
+      return res.status(400).json({ mensagem: "Email já cadastrado" });
+    }
+
     //faz uma validaçao se existe um erro nos dados enviado do corpo e o devolve
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
