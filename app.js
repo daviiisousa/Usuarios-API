@@ -11,7 +11,7 @@ app.use(cors());
 // Rotas
 const usuarioRoutes = require("./src/routes/usuariosRoutes");
 
-app.use("/usuarios", usuarioRoutes);
+app.use(usuarioRoutes);
 
 // Inicialização do servidor
 app.listen(port, () => {

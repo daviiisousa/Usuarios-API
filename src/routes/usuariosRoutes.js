@@ -7,25 +7,38 @@ const {
   createUsuario,
   deleteUsuario,
   updateUsuario,
-  loginUsuario,
   usuariosInativos,
-  logoutUsuario
 } = require("../controller/userController");
 
-const {autenticarToken} = require('../middleware/authMiddleware')
+const { autenticarToken } = require("../middleware/authMiddleware");
 
-const { validarUsuario, validarLogin } = require("../validators/usuariosValidator");
+const {
+  validarUsuario,
+  validarLogin,
+} = require("../validators/usuariosValidator");
+
+const {
+  validateCreateUser,
+  validateUpdateUser,
+  validateDeleteUser,
+} = require("../middleware/userMiddleware");
+const { loginUsuario } = require("../controller/authController");
 
 // Rotas publicas
-router.post("/", validarUsuario, createUsuario);
-router.post("/login", validarLogin, loginUsuario)
+router.post("/user", validarUsuario, validateCreateUser, createUsuario);
+router.post("/login", validarLogin, loginUsuario);
 
 //Rotas privadas
-router.get("/",autenticarToken, getUsuarios);
-router.get("/adm", autenticarToken, usuariosInativos)
-router.get("/:id",autenticarToken, getUsuarioById);
-router.delete("/:id",autenticarToken, deleteUsuario);
-router.put("/:id", autenticarToken, validarUsuario, updateUsuario);
-router.post('/logout', autenticarToken, logoutUsuario )
+router.get("/users", autenticarToken, getUsuarios);
+router.get("/adm", autenticarToken, usuariosInativos);
+router.get("/user/:id", autenticarToken, getUsuarioById);
+router.delete("/user/:id", autenticarToken, validateDeleteUser, deleteUsuario);
+router.put(
+  "/user/:id",
+  autenticarToken,
+  validateUpdateUser,
+  validarUsuario,
+  updateUsuario
+);
 
 module.exports = router;
