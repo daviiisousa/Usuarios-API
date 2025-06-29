@@ -28,7 +28,7 @@ Coletar dados de formularios para a criação de usarios, CRUD completo, API res
 
 ```bash
     # Clone o repositório
-    git clone https://github.com/daviiisousa/Todo-tarefa
+    git clone https://github.com/daviiisousa/Usuarios-API.git
 
     # Acesse a pasta do projeto
     cd seu-repo
