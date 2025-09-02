@@ -12,7 +12,7 @@ function autenticarToken(req, res, next) {
 
   try {
     //decodifica o token e verfica se existe a assinatura igual a do env
-    const usuario = jwt.verify(token, process.env.JWT_SECRET);
+    const usuario = jwt.verify(token, process.env.SECRET_KEY);
     req.usuario = usuario; // Adiciona os dados do usuário no request
     next();
   } catch (error) {
