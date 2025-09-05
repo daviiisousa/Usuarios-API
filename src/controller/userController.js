@@ -12,12 +12,10 @@ const getUsuarios = async (req, res) => {
     });
 
     if (!usuariosAtivos) {
-      return res
-        .status(404)
-        .json({ success: false, mensagem: "Nenhum usuário ativo encontrado" });
+      return res.status(404).json([]);
     }
 
-    res.status(200).json({ success: true, data: usuariosAtivos });
+    res.status(200).json(usuariosAtivos);
   } catch (error) {
     console.error("Erro ao buscar os usuários:", error);
     res
