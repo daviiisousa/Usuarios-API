@@ -121,12 +121,22 @@ const deleteUsuario = async (req, res) => {
 const updateUsuario = async (req, res) => {
   const { id } = req.params;
   try {
-    const usuario = await Users.update(req.body, { where: { id } });
+    await Users.update(req.body, { where: { id } });
+
+    // Buscar o usuário atualizado
+    const usuarioAtualizado = await Users.findByPk(id);
+
+    if (!usuarioAtualizado) {
+      return res.status(404).json({
+        success: false,
+        mensagem: "Usuário não encontrado",
+      });
+    }
 
     res.status(200).json({
       success: true,
       mensagem: "Usuário atualizado com sucesso",
-      data: usuario,
+      data: usuarioAtualizado,
     });
   } catch (error) {
     console.error("Erro ao atualizar usuário:", error);
